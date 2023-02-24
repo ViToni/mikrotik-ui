@@ -36,6 +36,14 @@ yarn lint
 npm run lint
 ```
 
+### Fix issues found by lint
+
+```bash
+yarn lint-fix
+# or
+npm run lint-fix
+```
+
 ### Build the app for production
 
 ```bash
