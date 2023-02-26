@@ -37,6 +37,12 @@
           v-bind="link"
         />
       </q-list>
+      <q-item to="/logout">
+        <q-item-section avatar>
+          <q-icon name="logout" />
+        </q-item-section>
+        <q-item-section>Logout</q-item-section>
+      </q-item>
     </q-drawer>
 
     <q-page-container>

@@ -97,7 +97,7 @@ module.exports = {
             "error",
             {
                 ignoreWhenEmpty: true,
-                ignores: ["a", "q-item-label"]
+                ignores: ["a", "div", "q-item-label"]
             }
         ]
     }
