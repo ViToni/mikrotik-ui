@@ -32,8 +32,32 @@
 </template>
 
 <script setup>
-import EssentialLink from "components/EssentialLink.vue";
+import { EssentialLink } from "components/common";
 
 const essentialLinks = [
+    {
+        title: "MikroTik-UI",
+        caption: "github.com/ViToni/mikrotik-ui",
+        icon: "code",
+        link: "https://github.com/ViToni/mikrotik-ui"
+    },
+    {
+        title: "MikroTik Forum",
+        caption: "forum.mikrotik.com",
+        icon: "record_voice_over",
+        link: "https://forum.mikrotik.com/"
+    },
+    {
+        title: "MikroTik Wiki",
+        caption: "wiki.mikrotik.com/",
+        icon: "school",
+        link: "https://wiki.mikrotik.com/"
+    },
+    {
+        title: "MikroTik Wiki (new)",
+        caption: "help.mikrotik.com/docs",
+        icon: "school",
+        link: "https://help.mikrotik.com/docs"
+    }
 ];
 </script>
