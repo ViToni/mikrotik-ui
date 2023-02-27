@@ -120,3 +120,13 @@ export default defineComponent({
     }
 });
 </script>
+
+<style>
+.body--light {
+    background: #ccc;
+}
+
+.q-drawer {
+    background: #f9f9f9;
+}
+</style>
