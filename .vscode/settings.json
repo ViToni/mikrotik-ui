@@ -14,6 +14,7 @@
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": [
+    "html",
     "javascript",
     "vue"
   ],

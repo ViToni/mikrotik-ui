@@ -100,5 +100,12 @@ module.exports = {
                 ignores: ["a", "div", "q-item-label"]
             }
         ]
-    }
+    },
+    // see: https://github.com/vuejs/eslint-plugin-vue/issues/1355#issuecomment-1011266670
+    overrides: [
+        {
+          files: ["*.html"],
+          processor: "vue/.vue"
+        }
+    ]
 };
