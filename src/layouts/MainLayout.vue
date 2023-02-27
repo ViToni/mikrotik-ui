@@ -11,6 +11,9 @@
           @click="toggleDrawer"
         />
         <q-toolbar-title>
+          <q-avatar size="sm" class="q-mb-xs">
+            <img src="/img/mtv2/android-chrome-512x512.png">
+          </q-avatar>
           MikroTik UI
         </q-toolbar-title>
       </q-toolbar>
