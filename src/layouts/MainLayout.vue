@@ -28,7 +28,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <q-page class="flex-center">
+        <div class="column q-ma-xl">
+          <router-view />
+        </div>
+      </q-page>
     </q-page-container>
 
     <q-footer reveal elevated class="row justify-end">
