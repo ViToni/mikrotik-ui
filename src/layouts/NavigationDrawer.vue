@@ -6,6 +6,22 @@
       </q-item-section>
     </q-item>
 
+    <q-expansion-item
+      :content-inset-level="1"
+      dense
+      expand-separator
+      icon="router"
+      label="System"
+      default-opened
+    >
+      <q-item to="/system/logs" dense>
+        <q-item-section avatar>
+          <q-icon name="view_list" />
+        </q-item-section>
+        <q-item-section>Logs</q-item-section>
+      </q-item>
+    </q-expansion-item>
+
     <q-item to="/logout">
       <q-item-section avatar>
         <q-icon name="logout" />

@@ -5,6 +5,10 @@ const routes = [
         component: () => import("layouts/MainLayout.vue"),
         meta: { requiresAuth: true },
         children: [
+            {
+                path: "/system/logs",
+                component: () => import("components/system/LogsTable.vue")
+            }
         ]
     },
     {
