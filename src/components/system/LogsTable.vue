@@ -4,6 +4,7 @@
     :loading="loading"
     :rows="logs"
     :columns="columns"
+    :visible-columns="visibleColumns"
     :pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
     row-key=".id"
@@ -21,7 +22,9 @@ const dataPath = "/rest/log?.proplist=.id,time,message,topics";
 const loading = ref(true);
 
 const pagination = ref({
-    rowsPerPage: 20
+    rowsPerPage: 20,
+    sortBy: ".id",
+    descending: true
 });
 const rowsPerPageOptions = ref(
     [20, 50, 100, 200, 500, 0]
@@ -40,14 +43,13 @@ const logs = ref([]);
 const columns = [
     {
         name: ".id",
-        label: "#",
-        align: "left",
         field: ".id",
-        style: "width: 4em",
-        format: val => parseInt(val.substring(1), 16)
+        sortable: true,
+        sort: (a, b, rowA, rowB) => idCompareTo(a, b)
     },
     {
         name: "time",
+        required: true,
         label: "Time",
         align: "left",
         field: "time",
@@ -55,6 +57,7 @@ const columns = [
     },
     {
         name: "message",
+        required: true,
         label: "Message",
         align: "left",
         field: "message",
@@ -62,12 +65,15 @@ const columns = [
     },
     {
         name: "topics",
+        required: true,
         label: "Topics",
         align: "left",
         field: "topics",
         style: "width: 16em"
     }
 ];
+
+const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
@@ -91,6 +97,19 @@ onMounted(() => {
             loading.value = false;
         });
 });
+
+// =============================================================================
+
+function idCompareTo(a, b) {
+    const valA = idToNumber(a);
+    const valB = idToNumber(b);
+
+    return valA - valB;
+}
+
+function idToNumber(id) {
+    return parseInt(id.substring(1), 16);
+}
 
 // =============================================================================
 </script>
