@@ -1,15 +1,25 @@
 <template>
   <q-table
-    title="Logs"
     :loading="loading"
     :rows="logs"
     :columns="columns"
     :visible-columns="visibleColumns"
+    :filter="filter"
     :pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
     row-key=".id"
     dense
-  />
+  >
+    <template #top>
+      <div class="q-table__title">Logs</div>
+      <q-space />
+      <q-input v-model="filter" dense debounce="300" color="primary" placeholder="Search">
+        <template #append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </template>
+  </q-table>
 </template>
 
 <script setup>
@@ -29,6 +39,8 @@ const pagination = ref({
 const rowsPerPageOptions = ref(
     [20, 50, 100, 200, 500, 0]
 );
+
+const filter = ref("");
 
 const logs = ref([]);
 // const logs = ref([
@@ -113,3 +125,9 @@ function idToNumber(id) {
 
 // =============================================================================
 </script>
+
+<style scoped>
+.q-input {
+    width: 25em;
+}
+</style>
