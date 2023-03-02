@@ -17,6 +17,26 @@
         <template #append>
           <q-icon name="search" />
         </template>
+
+        <!-- override how regular rows are created-->
+        <template #body="props">
+          <q-tr :props="props">
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <!-- break up array values into badges -->
+              <span v-if="Array.isArray(col.value)">
+                <!-- each badge gets an individual class added based on content -->
+                <q-badge
+                  v-for="entry in col.value" :key="entry"
+                  class="q-ma-xs" :class="`${col.name + '-' + entry}`"
+                  :rounded="isLogLevel(entry)"
+                >{{ entry }}</q-badge></span>
+              <!-- non-array values -->
+              <span v-else>
+                {{ col.value }}
+              </span>
+            </q-td>
+          </q-tr>
+        </template>
       </q-input>
     </template>
   </q-table>
@@ -76,12 +96,20 @@ const columns = [
         style: "width: 70em"
     },
     {
-        name: "topics",
+        name: "level",
         required: true,
-        label: "Topics",
+        label: "Level",
         align: "left",
-        field: "topics",
-        style: "width: 16em"
+        field: "levels",
+        style: "width: 8em"
+    },
+    {
+        name: "system",
+        required: true,
+        label: "System",
+        align: "left",
+        field: "systems",
+        style: "width: 8em"
     }
 ];
 
@@ -103,6 +131,7 @@ onMounted(() => {
         }
     })
         .then(response => response.json())
+        .then(splitTopics)
         .then(jsonObject => { logs.value = jsonObject; })
         .catch(error => { console.log("Error: " + error); })
         .finally(() => {
@@ -124,10 +153,85 @@ function idToNumber(id) {
 }
 
 // =============================================================================
+
+function splitTopics(jsonObject) {
+    jsonObject.forEach((entry) => {
+        if (entry.topics?.length > 0) {
+            const topics = entry.topics.split(",");
+
+            entry.levels = getLogLevels(topics).sort(logLevelCompareTo);
+            entry.systems = getSystems(topics);
+        } else {
+            entry.levels = [];
+            entry.systems = [];
+        }
+        delete entry.topics;
+    });
+
+    return jsonObject;
+}
+
+// =============================================================================
+
+const logLevels = {
+    info: 4,
+    warning: 2,
+    error: 1,
+    critical: 0
+};
+
+function getLogLevels(entries) {
+    return entries.filter(isLogLevel);
+}
+
+function getSystems(entries) {
+    return entries.filter(isLogLevel.not);
+}
+
+function isLogLevel(entry) {
+    return (entry in logLevels);
+}
+isLogLevel.not = (...args) => !isLogLevel(...args);
+
+function logLevelCompareTo(a, b) {
+    const isLogA = logLevels[a] ?? Number.MAX_VALUE;
+    const isLogB = logLevels[b] ?? Number.MAX_VALUE;
+
+    return (isLogA - isLogB);
+}
+
+// =============================================================================
 </script>
 
 <style scoped>
 .q-input {
     width: 25em;
+}
+
+.level-info {
+    background-color: green;
+}
+
+.level-warning {
+    background-color: yellow;
+    color: darkslategrey
+}
+
+.level-error {
+    background-color: orange;
+    color: darkslategrey
+}
+
+.level-critical {
+    background-color: red;
+}
+
+.system-dhcp {
+    background-color: lightblue;
+    color: darkslategrey
+}
+
+.system-system {
+    background-color: salmon
 }
 </style>
