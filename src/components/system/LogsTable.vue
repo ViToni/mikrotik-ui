@@ -1,51 +1,42 @@
 <template>
-  <q-table
+  <SearchTable
+    title="Logs"
     :loading="loading"
     :rows="logs"
     :columns="columns"
     :visible-columns="visibleColumns"
-    :filter="filter"
     :pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
     row-key=".id"
-    dense
   >
-    <template #top>
-      <div class="q-table__title">Logs</div>
-      <q-space />
-      <q-input v-model="filter" dense debounce="300" color="primary" placeholder="Search">
-        <template #append>
-          <q-icon name="search" />
-        </template>
-
-        <!-- override how regular rows are created-->
-        <template #body="props">
-          <q-tr :props="props">
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">
-              <!-- break up array values into badges -->
-              <span v-if="Array.isArray(col.value)">
-                <!-- each badge gets an individual class added based on content -->
-                <q-badge
-                  v-for="entry in col.value" :key="entry"
-                  class="q-ma-xs" :class="`${col.name + '-' + entry}`"
-                  :rounded="isLogLevel(entry)"
-                >{{ entry }}</q-badge></span>
-              <!-- non-array values -->
-              <span v-else>
-                {{ col.value }}
-              </span>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-input>
+    <!-- override how regular rows are created-->
+    <template #body="props">
+      <q-tr :props="props">
+        <q-td v-for="col in props.cols" :key="col.name" :props="props">
+          <!-- break up array values into badges -->
+          <span v-if="Array.isArray(col.value)">
+            <!-- each badge gets an individual class added based on content -->
+            <q-badge
+              v-for="entry in col.value" :key="entry"
+              class="q-ma-xs" :class="`${col.name + '-' + entry}`"
+              :rounded="isLogLevel(entry)"
+            >{{ entry }}</q-badge></span>
+          <!-- non-array values -->
+          <span v-else>
+            {{ col.value }}
+          </span>
+        </q-td>
+      </q-tr>
     </template>
-  </q-table>
+  </SearchTable>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "src/stores";
+
+import { SearchTable } from "components/common";
 
 const dataPath = "/rest/log?.proplist=.id,time,message,topics";
 
@@ -59,8 +50,6 @@ const pagination = ref({
 const rowsPerPageOptions = ref(
     [20, 50, 100, 200, 500, 0]
 );
-
-const filter = ref("");
 
 const logs = ref([]);
 // const logs = ref([
@@ -204,10 +193,6 @@ function logLevelCompareTo(a, b) {
 </script>
 
 <style scoped>
-.q-input {
-    width: 25em;
-}
-
 .level-info {
     background-color: green;
 }
