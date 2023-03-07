@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "src/stores";
@@ -56,6 +56,8 @@ const drawerOpen = ref(false);
 function toggleDrawer() {
     drawerOpen.value = !drawerOpen.value;
 }
+
+watch(() => $q.dark.isActive, authStore.saveDarkMode);
 
 onMounted(() => {
     const { user: authUser } = storeToRefs(authStore);
