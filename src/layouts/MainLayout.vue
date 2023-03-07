@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "src/stores";
 
@@ -55,6 +55,8 @@ function toggleDrawer() {
 
 const $q = useQuasar();
 const authStore = useAuthStore();
+
+watch(() => $q.dark.isActive, authStore.saveDarkMode);
 
 onMounted(() => {
     // default to non-darkMode when unknown

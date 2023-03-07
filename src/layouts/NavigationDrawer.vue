@@ -6,14 +6,7 @@
       </q-item-section>
     </q-item>
 
-    <q-btn
-      color="grey"
-      class="absolute-top-right q-mr-xs q-mt-xs"
-      flat
-      round
-      :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-      @click="toggleDarkMode()"
-    />
+    <DarkModeToggle class="absolute-top-right q-mr-xs q-mt-xs" />
 
     <q-expansion-item
       :content-inset-level="1"
@@ -57,20 +50,7 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
-import { useAuthStore } from "src/stores";
-
-import { EssentialLink } from "components/common";
-
-const authStore = useAuthStore();
-const $q = useQuasar();
-
-function toggleDarkMode() {
-    $q.dark.toggle();
-
-    const darkMode = $q.dark.isActive;
-    authStore.saveDarkMode(darkMode);
-}
+import { DarkModeToggle, EssentialLink } from "components/common";
 
 const essentialLinks = [
     {

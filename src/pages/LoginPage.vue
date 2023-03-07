@@ -1,14 +1,7 @@
 <template>
   <div class="fullscreen text-center q-pa-md flex flex-center">
     <q-card bordered class="q-pa-lg">
-      <q-btn
-        color="grey"
-        class="absolute-top-right q-mr-xs q-mt-xs"
-        flat
-        round
-        :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-        @click="$q.dark.toggle()"
-      />
+      <DarkModeToggle class="absolute-top-right q-mr-xs q-mt-xs" />
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
@@ -49,6 +42,8 @@ import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 
 import { useAuthStore } from "src/stores";
+
+import { DarkModeToggle } from "components/common";
 
 const router = useRouter();
 const authStore = useAuthStore();
