@@ -5,6 +5,7 @@
   <q-table
     :filter="filter"
     v-bind="{...$props, ...$attrs}"
+    color="primary"
     dense
   >
     <template #top>
