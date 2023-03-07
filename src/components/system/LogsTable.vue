@@ -33,6 +33,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 // import { date } from "quasar";
 import { useAuthStore } from "src/stores";
 
@@ -119,13 +120,15 @@ const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
-const securedUrl = new URL("/rest/log?.proplist=.id,time,message,topics", authStore.user.routerUrl).href;
+const { authData } = storeToRefs(authStore);
+const securedUrl = new URL("/rest/log?.proplist=.id,time,message,topics", authData.value.routerUrl).href;
 
 onMounted(() => {
     fetch(securedUrl, {
         method: "GET",
         headers: {
-            Authorization: "Basic " + authStore.user.authdata
+            Authorization: "Basic " + authData.value.basicAuth,
+            "Cache-Control": "no-cache"
         }
     })
         .then(response => response.json())
