@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr fFf">
-    <q-header elevated>
+    <q-header :class="$q.dark.isActive ? '' : 'inset-shadow-down'">
       <q-toolbar>
         <q-btn
           flat
@@ -35,14 +35,16 @@
       </q-page>
     </q-page-container>
 
-    <q-footer reveal elevated class="row justify-end">
+    <q-footer reveal class="row justify-end">
       <div class="q-mr-sm q-ml-sm">Quasar v{{ $q.version }}</div>
     </q-footer>
   </q-layout>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useQuasar } from "quasar";
+import { useAuthStore } from "src/stores";
 
 import NavigationDrawer from "./NavigationDrawer.vue";
 
@@ -50,14 +52,36 @@ const drawerOpen = ref(false);
 function toggleDrawer() {
     drawerOpen.value = !drawerOpen.value;
 }
+
+const $q = useQuasar();
+const authStore = useAuthStore();
+
+onMounted(() => {
+    // default to non-darkMode when unknown
+    const darkMode = authStore.darkMode ?? false;
+    $q.dark.set(darkMode);
+});
 </script>
 
-<style>
+<style lang="scss">
 .body--light {
-    background: #ccc;
+    background: $grey-4
 }
 
-.q-drawer {
-    background: #f9f9f9;
+.body--dark {
+    background: $grey-9;
+    color: $blue-grey-1;
+}
+
+.q-header, .q-footer {
+    background: #0c355d;;
+}
+
+.q-drawer, .q-item {
+    background: $grey-3;
+}
+
+.q-drawer--dark, .q-item--dark {
+    background: $grey-10;
 }
 </style>

@@ -6,15 +6,18 @@ export const useAuthStore = defineStore({
         // initialize state from local storage to enable user to stay logged in
         user: loadUser()
     }),
+    getters: {
+        darkMode: (state) => state.user?.darkMode
+    },
     actions: {
-        async login(baseUrl, username, password) {
+        async login(baseUrl, username, password, darkMode) {
             const routerUrl = new URL("/", baseUrl).href;
             const authToken = "Basic " + window.btoa(username + ":" + password);
 
             return authenticate(routerUrl, authToken)
                 .then(() => {
                     // create valid user with data just verfied
-                    const user = { routerUrl, username, authToken };
+                    const user = { routerUrl, username, authToken, darkMode };
 
                     // update internal state with valid user
                     this.user = user;
@@ -33,6 +36,10 @@ export const useAuthStore = defineStore({
         },
         hasAuth() {
             return isNotNilOrWhitespace(this.user?.authToken);
+        },
+        saveDarkMode(darkMode) {
+            this.user = { ...this.user, darkMode };
+            storeUser(this.user);
         }
     }
 });

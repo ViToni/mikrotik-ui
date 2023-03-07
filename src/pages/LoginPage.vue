@@ -1,6 +1,14 @@
 <template>
   <div class="fullscreen text-center q-pa-md flex flex-center">
     <q-card bordered class="q-pa-lg">
+      <q-btn
+        color="grey"
+        class="absolute-top-right q-mr-xs q-mt-xs"
+        flat
+        round
+        :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
+        @click="$q.dark.toggle()"
+      />
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
@@ -38,11 +46,13 @@
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 import { useAuthStore } from "src/stores";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const $q = useQuasar();
 
 const routerUrl = ref("");
 const username = ref("");
@@ -59,6 +69,10 @@ onMounted(() => {
 
     routerUrl.value = authUser.value?.routerUrl ?? "https://";
     username.value = authUser.value?.username ?? "admin";
+
+    // default to non-darkMode when unknown
+    const darkMode = authUser?.value?.darkMode ?? false;
+    $q.dark.set(darkMode);
 });
 
 function switchVisibility() {
@@ -68,7 +82,8 @@ function switchVisibility() {
 }
 
 async function submit() {
-    return await authStore.login(routerUrl.value, username.value, password.value)
+    const darkMode = $q.dark.isActive;
+    return await authStore.login(routerUrl.value, username.value, password.value, darkMode)
         .then(() => { router.redirectAfterLogin(); })
         .catch(error => { apiError.value = error.message ?? error; });
 }
