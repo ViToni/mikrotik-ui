@@ -7,14 +7,14 @@ export const useAuthStore = defineStore({
         user: loadUser()
     }),
     actions: {
-        async login(baseUrl, username, password) {
+        async login(baseUrl, username, password, darkMode) {
             const routerUrl = new URL("/", baseUrl).href;
             const authdata = window.btoa(username + ":" + password);
 
             return authenticate(routerUrl, authdata)
                 .then(() => {
                     // create valid user with data just verfied
-                    const user = { routerUrl, username, authdata };
+                    const user = { routerUrl, username, authdata, darkMode };
 
                     // update internal state with valid user
                     this.user = user;
@@ -38,6 +38,10 @@ export const useAuthStore = defineStore({
         },
         hasAuth() {
             return isNotNilOrWhitespace(this.user.authdata);
+        },
+        saveDarkMode(darkMode) {
+            this.user = { ...this.user, darkMode };
+            storeUser(this.user);
         }
     }
 });
