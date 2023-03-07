@@ -3,8 +3,9 @@ import { defineStore } from "pinia";
 export const useAuthStore = defineStore({
     id: "auth",
     state: () => ({
-        // initialize state from local storage to enable user to stay logged in
-        user: loadUser()
+        // initialize state from local storage to enable user to keep settings
+        user: loadUser(),
+        authData: loadAuthData()
     }),
     getters: {
         darkMode: (state) => state.user?.darkMode
@@ -17,25 +18,31 @@ export const useAuthStore = defineStore({
             return authenticate(routerUrl, authToken)
                 .then(() => {
                     // create valid user with data just verfied
-                    const user = { routerUrl, username, authToken, darkMode };
+                    const user = { routerUrl, username, darkMode };
 
                     // update internal state with valid user
                     this.user = user;
 
-                    // store user in local storage to keep user logged in between page refreshes
+                    // store user data in local storage to keep settings between page refreshes
                     storeUser(user);
+
+                    const authData = { routerUrl, authToken };
+                    this.authData = authData;
+
+                    // store auth data in session storage to keep user logged only per window / tab
+                    storeAuthData(authData);
 
                     return true;
                 });
         },
         async logout() {
-            // keep username and routerUrl for convenience on next login
+            // keep username and routerUrl for convenience on next login (in user)
             // just delete authorization
-            delete this.user?.authToken;
-            storeUser(this.user);
+            this.authData = null;
+            removeAuthData();
         },
         hasAuth() {
-            return isNotNilOrWhitespace(this.user?.authToken);
+            return isNotNilOrWhitespace(this.authData?.authToken);
         },
         saveDarkMode(darkMode) {
             this.user = { ...this.user, darkMode };
@@ -77,15 +84,41 @@ function storeUser(user) {
 }
 
 function loadUser() {
-    try {
-        return JSON.parse(localStorage.getItem(userKey));
-    } catch (e) {
-        return null;
-    }
+    const item = localStorage.getItem(userKey);
+
+    return parseJSON(item);
+}
+
+// =============================================================================
+
+const authDataKey = "authData";
+
+function storeAuthData(authData) {
+    sessionStorage.setItem(authDataKey, JSON.stringify(authData));
+}
+
+function loadAuthData() {
+    const item = sessionStorage.getItem(authDataKey);
+
+    return parseJSON(item);
+}
+
+function removeAuthData() {
+    sessionStorage.removeItem(authDataKey);
 }
 
 // =============================================================================
 
 const isNotNilOrWhitespace = input => (input?.trim().length || 0) > 0;
+
+// =============================================================================
+
+function parseJSON(item) {
+    try {
+        return JSON.parse(item);
+    } catch (e) {
+        return null;
+    }
+}
 
 // =============================================================================

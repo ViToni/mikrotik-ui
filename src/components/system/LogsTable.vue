@@ -34,6 +34,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
+// import { date } from "quasar";
 import { useAuthStore } from "src/stores";
 
 import { SearchTable } from "components/common";
@@ -107,15 +108,15 @@ const visibleColumns = ref(["time", "message", "topics"]);
 // =============================================================================
 
 const authStore = useAuthStore();
-const { user: authUser } = storeToRefs(authStore);
+const { authData } = storeToRefs(authStore);
 
-const securedUrl = new URL(dataPath, authUser.value.routerUrl).href;
+const securedUrl = new URL(dataPath, authData.value.routerUrl).href;
 
 onMounted(() => {
     fetch(securedUrl, {
         method: "GET",
         headers: {
-            Authorization: authUser.value.authToken,
+            Authorization: authData.value.authToken,
             "Cache-Control": "no-cache"
         }
     })
