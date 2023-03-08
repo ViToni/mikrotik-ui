@@ -16,6 +16,12 @@
       label="System"
       default-opened
     >
+      <q-item to="/system/services" dense>
+        <q-item-section avatar>
+          <q-icon name="view_list" />
+        </q-item-section>
+        <q-item-section>Services</q-item-section>
+      </q-item>
       <q-item to="/system/logs" dense>
         <q-item-section avatar>
           <q-icon name="view_list" />

@@ -34,7 +34,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
-// import { date } from "quasar";
 import { useAuthStore } from "src/stores";
 
 import { SearchTable } from "components/common";
