@@ -33,8 +33,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useAuthStore } from "src/stores";
+import { api } from "src/utils";
 
 import { SearchTable } from "components/common";
 
@@ -106,20 +105,9 @@ const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
-const authStore = useAuthStore();
-const { authData } = storeToRefs(authStore);
-
-const securedUrl = new URL(dataPath, authData.value.routerUrl).href;
-
 onMounted(() => {
-    fetch(securedUrl, {
-        method: "GET",
-        headers: {
-            Authorization: authData.value.authToken,
-            "Cache-Control": "no-cache"
-        }
-    })
-        .then(response => response.json())
+    api.get(dataPath)
+        .then(response => response.data)
         .then(splitTopics)
         .then(jsonObject => { logs.value = jsonObject; })
         .catch(error => { console.log("Error: " + error); })
