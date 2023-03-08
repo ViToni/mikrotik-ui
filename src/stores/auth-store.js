@@ -11,9 +11,8 @@ export const useAuthStore = defineStore({
         darkMode: (state) => state.user?.darkMode
     },
     actions: {
-        async login(baseUrl, username, password, darkMode) {
+        async login(baseUrl, username, authToken, darkMode) {
             const routerUrl = new URL("/", baseUrl).href;
-            const authToken = "Basic " + window.btoa(username + ":" + password);
 
             return authenticate(routerUrl, authToken)
                 .then(() => {

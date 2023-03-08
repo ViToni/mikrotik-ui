@@ -78,7 +78,8 @@ function switchVisibility() {
 
 async function submit() {
     const darkMode = $q.dark.isActive;
-    return await authStore.login(routerUrl.value, username.value, password.value, darkMode)
+    const authToken = "Basic " + window.btoa(username.value + ":" + password.value);
+    return await authStore.login(routerUrl.value, username.value, authToken, darkMode)
         .then(() => { router.redirectAfterLogin(); })
         .catch(error => { apiError.value = error.message ?? error; });
 }
