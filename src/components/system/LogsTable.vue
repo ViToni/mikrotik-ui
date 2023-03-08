@@ -127,7 +127,7 @@ onMounted(() => {
     fetch(securedUrl, {
         method: "GET",
         headers: {
-            Authorization: "Basic " + authData.value.basicAuth,
+            Authorization: authData.value.authToken,
             "Cache-Control": "no-cache"
         }
     })

@@ -10,9 +10,9 @@ export const useAuthStore = defineStore({
     actions: {
         async login(baseUrl, username, password, darkMode) {
             const routerUrl = new URL("/", baseUrl).href;
-            const basicAuth = window.btoa(username + ":" + password);
+            const authToken = "Basic " + window.btoa(username + ":" + password);
 
-            return authenticate(routerUrl, basicAuth)
+            return authenticate(routerUrl, authToken)
                 .then(() => {
                     // create valid user with data just verfied
                     const user = { routerUrl, username, darkMode };
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore({
                     // store user data in local storage to keep settings between page refreshes
                     storeUser(user);
 
-                    const authData = { routerUrl, basicAuth };
+                    const authData = { routerUrl, authToken };
                     this.authData = authData;
 
                     // store auth data in session storage to keep user logged only per window / tab
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore({
             removeAuthData();
         },
         hasAuth() {
-            return isNotNilOrWhitespace(this.authData?.basicAuth);
+            return isNotNilOrWhitespace(this.authData?.authToken);
         },
         saveDarkMode(darkMode) {
             this.user = { ...this.user, darkMode };
@@ -55,13 +55,13 @@ export const useAuthStore = defineStore({
 
 // internal methods
 
-async function authenticate(routerUrl, basicAuth) {
+async function authenticate(routerUrl, authToken) {
     // "/rest/system/identity" is the most simple secured page, just the name of the router
     const securedUrl = new URL("/rest/system/identity", routerUrl).href;
     const response = await fetch(securedUrl, {
         method: "GET",
         headers: {
-            Authorization: "Basic " + basicAuth,
+            Authorization: authToken,
             // required otherwise stale credentials might get cached
             "Cache-Control": "no-cache"
         }
