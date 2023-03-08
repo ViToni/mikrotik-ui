@@ -8,6 +8,10 @@ const routes = [
             {
                 path: "/system/logs",
                 component: () => import("components/system/LogsTable.vue")
+            },
+            {
+                path: "/system/services",
+                component: () => import("components/system/ServicesTable.vue")
             }
         ]
     },
