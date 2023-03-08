@@ -35,13 +35,11 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
-
-import { useAuthStore } from "src/stores";
+import { api } from "src/utils";
 
 import { InvertedToggle, SearchTable } from "components/common";
 
-const authStore = useAuthStore();
+const dataPath = "/rest/ip/service";
 
 const loading = ref(true);
 
@@ -99,18 +97,9 @@ const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
-const { authData } = storeToRefs(authStore);
-const securedUrl = new URL("/rest/ip/service", authData.value.routerUrl).href;
-
 onMounted(() => {
-    fetch(securedUrl, {
-        method: "GET",
-        headers: {
-            Authorization: authData.value.authToken,
-            "Cache-Control": "no-cache"
-        }
-    })
-        .then(response => response.json())
+    api.get(dataPath)
+        .then(response => response.data)
         .then(preprocessData)
         .then(jsonObject => { services.value = jsonObject; })
         .catch(error => { console.log("Error: " + error); })
