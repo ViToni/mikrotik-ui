@@ -33,7 +33,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { api } from "src/utils";
+import { api, Notifier } from "src/utils";
 
 import { SearchTable } from "components/common";
 
@@ -110,7 +110,7 @@ onMounted(() => {
         .then(response => response.data)
         .then(splitTopics)
         .then(jsonObject => { logs.value = jsonObject; })
-        .catch(error => { console.log("Error: " + error); })
+        .catch(Notifier.onError)
         .finally(() => {
             loading.value = false;
         });

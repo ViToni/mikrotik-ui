@@ -38,7 +38,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { api } from "src/utils";
+import { api, Notifier } from "src/utils";
 
 import { InvertedToggle, SearchTable } from "components/common";
 
@@ -111,7 +111,7 @@ function refreshData() {
         .then(response => response.data)
         .then(preprocessData)
         .then(jsonObject => { services.value = jsonObject; })
-        .catch(error => { console.log("Error: " + error); })
+        .catch(Notifier.onError)
         .finally(() => {
             loading.value = false;
         });
@@ -142,7 +142,8 @@ function stringToArray(entry, name) {
 
 function onChange(data, id) {
     api.patch(dataPath + "/" + id, data)
-        .then(() => refreshData());
+        .then(() => refreshData())
+        .catch(Notifier.onError);
 }
 
 // =============================================================================
