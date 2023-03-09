@@ -14,7 +14,10 @@
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.name" :props="props">
           <template v-if="col.name == 'disabled'">
-            <InvertedToggle :model-value="col.value" />
+            <InvertedToggle
+              :model-value="col.value"
+              @update:model-value="onChange({ disabled: $event }, props.key)"
+            />
           </template>
           <!-- break up array values into badges -->
           <span v-else-if="Array.isArray(col.value)">
@@ -98,6 +101,13 @@ const visibleColumns = ref(["time", "message", "topics"]);
 // =============================================================================
 
 onMounted(() => {
+    refreshData();
+});
+
+// =============================================================================
+
+function refreshData() {
+    loading.value = true;
     api.get(dataPath)
         .then(response => response.data)
         .then(preprocessData)
@@ -106,7 +116,7 @@ onMounted(() => {
         .finally(() => {
             loading.value = false;
         });
-});
+}
 
 // =============================================================================
 
@@ -127,6 +137,13 @@ function stringToArray(entry, name) {
     } else {
         entry[name] = [];
     }
+}
+
+// =============================================================================
+
+function onChange(data, id) {
+    api.patch(dataPath + "/" + id, data)
+        .then(() => refreshData());
 }
 
 // =============================================================================
