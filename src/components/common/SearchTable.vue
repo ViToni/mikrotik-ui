@@ -7,7 +7,7 @@
     v-bind="{...$props, ...$attrs}"
     dense
   >
-    <template #top>
+    <template #top="props">
       <div class="q-table__title">{{ title }}</div>
       <q-space />
       <q-input
@@ -20,6 +20,14 @@
           <q-icon name="search" dense />
         </template>
       </q-input>
+
+      <!-- Fullscreen -->
+      <q-btn
+        flat round dense
+        class="q-ml-sm"
+        :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+        @click="props.toggleFullscreen"
+      />
     </template>
 
     <!-- insert slots passed to component -->
