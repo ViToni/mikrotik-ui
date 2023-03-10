@@ -8,6 +8,7 @@
     :pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
     row-key=".id"
+    :refresh="refreshData"
   >
     <!-- override how regular rows are created-->
     <template #body="props">
@@ -106,6 +107,13 @@ const visibleColumns = ref(["time", "message", "topics"]);
 // =============================================================================
 
 onMounted(() => {
+    refreshData();
+});
+
+// =============================================================================
+
+function refreshData() {
+    loading.value = true;
     api.get(dataPath)
         .then(response => response.data)
         .then(splitTopics)
@@ -114,7 +122,7 @@ onMounted(() => {
         .finally(() => {
             loading.value = false;
         });
-});
+}
 
 // =============================================================================
 

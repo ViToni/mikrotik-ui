@@ -8,6 +8,7 @@
     :pagination="pagination"
     :hide-pagination="hidePagination"
     row-key=".id"
+    :refresh="refreshData"
   >
     <!-- override how regular rows are created-->
     <template #body="props">

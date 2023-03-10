@@ -10,6 +10,16 @@
   >
     <template #top="props">
       <div class="q-table__title">{{ title }}</div>
+      <!-- Refresh -->
+      <q-btn
+        v-if="refresh"
+        class="q-ml-sm"
+        flat round dense
+        icon="refresh"
+        size="sm"
+        @click="refresh"
+      />
+
       <q-space />
       <q-input
         v-model="filter"
@@ -48,6 +58,11 @@ export default {
         title: {
             type: String,
             default: ""
+        },
+        refresh: {
+            type: Function,
+            default: undefined,
+            desc: "Trigger refresh for table"
         }
     }
 };
