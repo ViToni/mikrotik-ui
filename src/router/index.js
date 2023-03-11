@@ -37,7 +37,7 @@ export default route(function (/* { store, ssrContext } */) {
     });
 
     Router.beforeEach(async (to) => {
-        if (authStore.hasAuth()) {
+        if (authStore.hasAuth) {
             // redirect away from login page if already logged in
             if (loginPage === to.path) {
                 return startPage;

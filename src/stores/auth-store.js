@@ -10,7 +10,8 @@ export const useAuthStore = defineStore({
     }),
     getters: {
         darkMode: (state) => state.user?.darkMode,
-        endPoint: (state) => createEndPoint(state.authData)
+        endPoint: (state) => createEndPoint(state.authData),
+        hasAuth: (state) => isNotNilOrWhitespace(state.authData?.authToken)
     },
     actions: {
         async login(baseUrl, username, authToken, darkMode) {
@@ -41,9 +42,6 @@ export const useAuthStore = defineStore({
             // just delete authorization
             this.authData = null;
             removeAuthData();
-        },
-        hasAuth() {
-            return isNotNilOrWhitespace(this.authData?.authToken);
         },
         saveDarkMode(darkMode) {
             this.user = { ...this.user, darkMode };
