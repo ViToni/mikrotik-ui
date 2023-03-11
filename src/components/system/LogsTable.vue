@@ -34,7 +34,8 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { api, Notifier } from "src/utils";
+import { Notifier } from "src/utils";
+import { useAuthStore } from "src/stores";
 
 import { SearchTable } from "components/common";
 
@@ -112,9 +113,11 @@ onMounted(() => {
 
 // =============================================================================
 
+const authStore = useAuthStore();
+
 function refreshData() {
     loading.value = true;
-    api.get(dataPath)
+    authStore.endPoint.get(dataPath)
         .then(response => response.data)
         .then(splitTopics)
         .then(jsonObject => { logs.value = jsonObject; })

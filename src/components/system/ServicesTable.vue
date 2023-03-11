@@ -39,7 +39,8 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { api, Notifier } from "src/utils";
+import { Notifier } from "src/utils";
+import { useAuthStore } from "src/stores";
 
 import { InvertedToggle, SearchTable } from "components/common";
 
@@ -106,9 +107,11 @@ onMounted(() => {
 
 // =============================================================================
 
+const authStore = useAuthStore();
+
 function refreshData() {
     loading.value = true;
-    api.get(dataPath)
+    authStore.endPoint.get(dataPath)
         .then(response => response.data)
         .then(preprocessData)
         .then(jsonObject => { services.value = jsonObject; })
@@ -142,7 +145,7 @@ function stringToArray(entry, name) {
 // =============================================================================
 
 function onChange(data, id) {
-    api.patch(dataPath + "/" + id, data)
+    authStore.endPoint.patch(dataPath + "/" + id, data)
         .then(() => refreshData())
         .catch(Notifier.onError);
 }

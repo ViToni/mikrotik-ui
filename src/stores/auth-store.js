@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useAuthStore = defineStore({
     id: "auth",
@@ -8,7 +9,8 @@ export const useAuthStore = defineStore({
         authData: loadAuthData()
     }),
     getters: {
-        darkMode: (state) => state.user?.darkMode
+        darkMode: (state) => state.user?.darkMode,
+        endPoint: (state) => createEndPoint(state.authData)
     },
     actions: {
         async login(baseUrl, username, authToken, darkMode) {
@@ -118,6 +120,21 @@ function parseJSON(item) {
     } catch (e) {
         return null;
     }
+}
+
+// =============================================================================
+
+function createEndPoint(authData) {
+    const baseURL = authData.routerUrl;
+    const Authorization = authData.authToken;
+
+    return axios.create({
+        baseURL,
+        headers: {
+            Authorization,
+            "Cache-Control": "no-cache"
+        }
+    });
 }
 
 // =============================================================================
