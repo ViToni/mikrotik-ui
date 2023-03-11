@@ -6,11 +6,18 @@ export const useAuthStore = defineStore({
     state: () => ({
         // initialize state from local storage to enable user to keep settings
         user: loadUser(),
-        authData: loadAuthData()
+        authData: loadAuthData(),
+        internalEndPoint: undefined
     }),
     getters: {
         darkMode: (state) => state.user?.darkMode,
-        endPoint: (state) => createEndPoint(state.authData),
+        endPoint: (state) => {
+            if (state.internalEndPoint === undefined) {
+                state.internalEndPoint = createEndPoint(state.authData);
+            }
+
+            return state.internalEndPoint;
+        },
         hasAuth: (state) => isNotNilOrWhitespace(state.authData?.authToken)
     },
     actions: {
