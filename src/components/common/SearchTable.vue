@@ -4,6 +4,7 @@
 <template>
   <q-table
     :filter="filter"
+    :loading="loading"
     v-bind="{...$props, ...$attrs}"
     color="primary"
     dense
@@ -12,12 +13,11 @@
       <div class="q-table__title">{{ title }}</div>
       <!-- Refresh -->
       <q-btn
-        v-if="refresh"
         class="q-ml-sm"
         flat round dense
         icon="refresh"
         size="sm"
-        @click="refresh"
+        @click="refreshData"
       />
 
       <q-space />
@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import { Notifier } from "src/utils";
 import { QTable } from "quasar";
 
 export default {
@@ -59,20 +61,39 @@ export default {
             type: String,
             default: ""
         },
-        refresh: {
+        fetchData: {
             type: Function,
             default: undefined,
-            desc: "Trigger refresh for table"
+            desc: "Fetch data for table"
         }
+    },
+    data() {
+        // connects table and search box
+        const filter = ref("");
+
+        // indicator for table data loading is done
+        const loading = ref(true);
+
+        return {
+            filter,
+            loading
+        };
+    },
+    mounted() {
+        this.refreshData();
+    },
+    methods: {
+        refreshData() {
+            this.loading = true;
+            this.fetchData()
+                .catch(Notifier.onError)
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        onError: Notifier.onError
     }
 };
-</script>
-
-<script setup>
-import { ref } from "vue";
-
-// connects table and search box
-const filter = ref("");
 </script>
 
 <style scoped>

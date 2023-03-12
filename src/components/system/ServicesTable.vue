@@ -1,14 +1,14 @@
 <template>
   <SearchTable
+    ref="searchTableRef"
     title="Services"
-    :loading="loading"
     :rows="services"
     :columns="columns"
     :visible-columns="visibleColumns"
     :pagination="pagination"
     :hide-pagination="hidePagination"
     row-key=".id"
-    :refresh="refreshData"
+    :fetch-data="fetchData"
   >
     <!-- override how regular rows are created-->
     <template #body="props">
@@ -38,15 +38,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { Notifier } from "src/utils";
+import { ref } from "vue";
 import { useAuthStore } from "src/stores";
 
 import { InvertedToggle, SearchTable } from "components/common";
 
 const dataPath = "/rest/ip/service";
 
-const loading = ref(true);
+const searchTableRef = ref(null);
 
 const pagination = ref({
     rowsPerPage: 0, // always show all services
@@ -101,24 +100,13 @@ const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
-onMounted(() => {
-    refreshData();
-});
-
-// =============================================================================
-
 const authStore = useAuthStore();
 
-function refreshData() {
-    loading.value = true;
-    authStore.endPoint.get(dataPath)
+async function fetchData() {
+    return authStore.endPoint.get(dataPath)
         .then(response => response.data)
         .then(preprocessData)
-        .then(jsonObject => { services.value = jsonObject; })
-        .catch(Notifier.onError)
-        .finally(() => {
-            loading.value = false;
-        });
+        .then(jsonObject => { services.value = jsonObject; });
 }
 
 // =============================================================================
@@ -146,8 +134,8 @@ function stringToArray(entry, name) {
 
 function onChange(data, id) {
     authStore.endPoint.patch(dataPath + "/" + id, data)
-        .then(() => refreshData())
-        .catch(Notifier.onError);
+        .then(() => searchTableRef.value.refreshData())
+        .catch(searchTableRef.value.onError);
 }
 
 // =============================================================================

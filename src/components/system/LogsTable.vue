@@ -1,14 +1,13 @@
 <template>
   <SearchTable
     title="Logs"
-    :loading="loading"
     :rows="logs"
     :columns="columns"
     :visible-columns="visibleColumns"
     :pagination="pagination"
     :rows-per-page-options="rowsPerPageOptions"
     row-key=".id"
-    :refresh="refreshData"
+    :fetch-data="fetchData"
   >
     <!-- override how regular rows are created-->
     <template #body="props">
@@ -33,15 +32,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { Notifier } from "src/utils";
+import { ref } from "vue";
 import { useAuthStore } from "src/stores";
 
 import { SearchTable } from "components/common";
 
 const dataPath = "/rest/log?.proplist=.id,time,message,topics";
-
-const loading = ref(true);
 
 const pagination = ref({
     rowsPerPage: 20,
@@ -107,24 +103,13 @@ const visibleColumns = ref(["time", "message", "topics"]);
 
 // =============================================================================
 
-onMounted(() => {
-    refreshData();
-});
-
-// =============================================================================
-
 const authStore = useAuthStore();
 
-function refreshData() {
-    loading.value = true;
-    authStore.endPoint.get(dataPath)
+async function fetchData() {
+    return authStore.endPoint.get(dataPath)
         .then(response => response.data)
         .then(splitTopics)
-        .then(jsonObject => { logs.value = jsonObject; })
-        .catch(Notifier.onError)
-        .finally(() => {
-            loading.value = false;
-        });
+        .then(jsonObject => { logs.value = jsonObject; });
 }
 
 // =============================================================================
