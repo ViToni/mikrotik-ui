@@ -45,6 +45,9 @@
     <template v-for="(_, slot) in $slots" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}" />
     </template>
+    <template #loading>
+      <q-inner-loading showing color="primary" />
+    </template>
   </q-table>
 </template>
 
