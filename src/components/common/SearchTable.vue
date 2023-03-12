@@ -45,14 +45,16 @@
     <template v-for="(_, slot) in $slots" #[slot]="scope">
       <slot :name="slot" v-bind="scope || {}" />
     </template>
-    <template #loading>
-      <q-inner-loading showing color="primary" />
+    <template #no-data>
+      <div v-if="!loading" class="full-width row flex-center q-gutter-sm">
+        <span style="font-size: 1.2em">No data.</span>
+      </div>
     </template>
   </q-table>
 </template>
 
 <script>
-import { ref } from "vue";
+import { inject } from "vue";
 import { Notifier } from "src/utils";
 import { QTable } from "quasar";
 
@@ -70,16 +72,18 @@ export default {
             desc: "Fetch data for table"
         }
     },
-    data() {
-        // connects table and search box
-        const filter = ref("");
-
-        // indicator for table data loading is done
-        const loading = ref(true);
-
+    setup() {
+        const delayedShowLoading = inject("delayedLoading");
+        const hideLoading = inject("disableLoading");
         return {
-            filter,
-            loading
+            delayedShowLoading,
+            hideLoading
+        };
+    },
+    data() {
+        return {
+            filter: "",
+            loading: true
         };
     },
     mounted() {
@@ -88,9 +92,11 @@ export default {
     methods: {
         refreshData() {
             this.loading = true;
+            const timeoutId = this.delayedShowLoading();
             this.fetchData()
                 .catch(Notifier.onError)
                 .finally(() => {
+                    this.hideLoading(timeoutId);
                     this.loading = false;
                 });
         },

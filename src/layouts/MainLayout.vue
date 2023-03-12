@@ -31,6 +31,14 @@
       <q-page class="flex-center">
         <div class="column q-ma-xl">
           <router-view />
+          <q-inner-loading
+            :showing="isLoading"
+            color="primary"
+            style="transform: translateY(calc(-20%)) !important;"
+          >
+            <q-spinner-dots color="primary" size="3em" />
+            <div style="font-size: 1.5em">Please wait...</div>
+          </q-inner-loading>
         </div>
       </q-page>
     </q-page-container>
@@ -42,7 +50,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "src/stores";
 
@@ -52,6 +60,24 @@ const drawerOpen = ref(false);
 function toggleDrawer() {
     drawerOpen.value = !drawerOpen.value;
 }
+
+const isLoading = ref(false);
+
+function delayedLoading() {
+    return setTimeout(async () => {
+        isLoading.value = true;
+    }, 400);
+}
+
+function disableLoading(timeoutId) {
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+    isLoading.value = false;
+}
+
+provide("delayedLoading", delayedLoading);
+provide("disableLoading", disableLoading);
 
 const $q = useQuasar();
 const authStore = useAuthStore();
